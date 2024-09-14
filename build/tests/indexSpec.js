@@ -40,6 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var index_1 = __importDefault(require("../index"));
+var fs_1 = __importDefault(require("fs"));
+var path_1 = __importDefault(require("path"));
+var util_1 = require("../util");
 var supertest = require('supertest');
 var request = supertest(index_1.default);
 describe('To test Image Resize Parameters width height parameter', function () {
@@ -47,7 +50,7 @@ describe('To test Image Resize Parameters width height parameter', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/filteredimage?filename=fjord')];
+                case 0: return [4 /*yield*/, request.get('/filteredimage?filename=santamonica')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(400);
@@ -59,12 +62,33 @@ describe('To test Image Resize Parameters width height parameter', function () {
         var response;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/filteredimage?filename=fjord&width=a&height=b')];
+                case 0: return [4 /*yield*/, request.get('/filteredimage?filename=santamonica&width=a&height=b')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(400);
                     return [2 /*return*/];
             }
+        });
+    }); });
+    it('It should return true if image is cached successfully', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var resizedFilePath;
+        return __generator(this, function (_a) {
+            resizedFilePath = path_1.default.join(__dirname, "../images/santamonica-400-400.jpg");
+            // Ensure the file does not exist before the function call
+            if (fs_1.default.existsSync(resizedFilePath)) {
+                fs_1.default.unlinkSync(resizedFilePath);
+            }
+            // Call the function that resizes the image and generates the file
+            (0, util_1.filterImageFromURL)('santamonica', 200, 200).then(function (resolve) {
+                expect(fs_1.default.existsSync(resizedFilePath)).toBeTrue();
+                return true;
+            })
+                //Error in function
+                .catch(function (error) {
+                expect(fs_1.default.existsSync(resizedFilePath)).toBeTrue();
+                return false;
+            });
+            return [2 /*return*/];
         });
     }); });
 });

@@ -49,10 +49,10 @@ var port = process.env.PORT || 8082;
 // Use the body parser middleware for post requests
 app.use(body_parser_1.default.json());
 // Displays a simple message to the user
-app.get("/", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         //res.send("try GET /filteredimage?image_url={{}}")
-        res.status(200).send("This is udacity project");
+        res.status(200).send('This is udacity project');
         return [2 /*return*/];
     });
 }); });

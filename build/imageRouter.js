@@ -42,41 +42,55 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 var express_1 = __importDefault(require("express"));
 var util_1 = require("./util");
+var path_1 = __importDefault(require("path"));
+var fs_1 = __importDefault(require("fs"));
 exports.router = express_1.default.Router();
-exports.router.get("/filteredimage", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, width, height;
+exports.router.get('/filteredimage', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var filename, width, height, resizedFilePath;
     return __generator(this, function (_a) {
         filename = req.query.filename;
         width = req.query.width;
         height = req.query.height;
+        resizedFilePath = path_1.default.join(__dirname, "../images/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"));
         console.log(filename);
         // No image url param
         if (!filename) {
-            return [2 /*return*/, res.status(404).send("404 Not Found!")];
+            res.status(404).send('404 Not Found!');
+            return [2 /*return*/];
         }
         //image url param is empty
         if (filename.length == 0) {
-            return [2 /*return*/, res.status(400).send("Bad Request!")];
+            res.status(400).send('Bad Request!');
+            return [2 /*return*/];
         }
         if (!width || !height) {
-            return [2 /*return*/, res.status(400).send("Missing width or height!")];
+            res.status(400).send('Missing width or height!');
+            return [2 /*return*/];
         }
         if (!parseInt(width)) {
-            return [2 /*return*/, res.status(400).send("Invalid width!")];
+            res.status(400).send('Invalid width!');
+            return [2 /*return*/];
         }
-        ;
         if (!parseInt(height)) {
-            return [2 /*return*/, res.status(400).send("Invalid height!")];
+            res.status(400).send('Invalid height!');
+            return [2 /*return*/];
         }
-        ;
+        // check if file is cached
+        if (fs_1.default.existsSync(resizedFilePath)) {
+            // Serve the cached image
+            res.sendFile(resizedFilePath);
+            return [2 /*return*/];
+        }
         //send the resulting file in the response
         (0, util_1.filterImageFromURL)(filename, parseInt(width), parseInt(height))
             .then(function (resolve) {
-            return res.status(200).sendFile(resolve);
+            res.status(200).sendFile(resolve);
+            return;
         })
             //Error in function
             .catch(function (error) {
-            return res.status(500).send("Internal Server Error: " + error);
+            res.status(500).send('Internal Server Error: ' + error);
+            return;
         });
         return [2 /*return*/];
     });

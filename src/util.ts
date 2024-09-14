@@ -7,14 +7,14 @@ export async function filterImageFromURL(
   filename: string,
   width: number,
   height: number,
-) {
+) : Promise<string> {
   return new Promise(async (resolve, reject) => {
     try {
       const filePath = path.join(__dirname, `../images/${filename}.jpg`);
+      const resizedFilePath = path.join(__dirname, `../images/${filename}-${width}-${height}.jpg`);
       let bufferFile = filePath;
       const photo = await Jimp.read(bufferFile);
-      const outpath =
-        '/tmp/filtered.' + Math.floor(Math.random() * 2000) + '.jpg';
+      const outpath = resizedFilePath;
       await photo
         .resize(width, height) // resize
         .quality(100) // set JPEG quality
@@ -27,3 +27,5 @@ export async function filterImageFromURL(
     }
   });
 }
+
+export default filterImageFromURL;

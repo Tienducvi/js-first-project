@@ -47,17 +47,18 @@ function filterImageFromURL(filename, width, height) {
         var _this = this;
         return __generator(this, function (_a) {
             return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var filePath, bufferFile, photo, outpath_1, error_1;
+                    var filePath, resizedFilePath, bufferFile, photo, outpath_1, error_1;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 3, , 4]);
                                 filePath = path_1.default.join(__dirname, "../images/".concat(filename, ".jpg"));
+                                resizedFilePath = path_1.default.join(__dirname, "../images/".concat(filename, "-").concat(width, "-").concat(height, ".jpg"));
                                 bufferFile = filePath;
                                 return [4 /*yield*/, jimp_1.default.read(bufferFile)];
                             case 1:
                                 photo = _a.sent();
-                                outpath_1 = "/tmp/filtered." + Math.floor(Math.random() * 2000) + ".jpg";
+                                outpath_1 = resizedFilePath;
                                 return [4 /*yield*/, photo
                                         .resize(width, height) // resize
                                         .quality(100) // set JPEG quality
@@ -79,3 +80,4 @@ function filterImageFromURL(filename, width, height) {
         });
     });
 }
+exports.default = filterImageFromURL;

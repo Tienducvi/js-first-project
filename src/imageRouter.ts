@@ -16,6 +16,11 @@ router.get('/filteredimage', async (req: Request, res: Response) : Promise<void>
     res.status(404).send('404 Not Found!');
     return;
   }
+  const regex = new RegExp("^[a-zA-Z]+$")
+  if(!regex.test(filename)) {
+    res.status(400).send('Invalid file name!');
+    return;
+  }
   //image url param is empty
   if (filename.length == 0) {
     res.status(400).send('Bad Request!');
@@ -25,18 +30,18 @@ router.get('/filteredimage', async (req: Request, res: Response) : Promise<void>
     res.status(400).send('Missing width or height!');
     return;
   }
-  if (!parseInt(width)) {
+  if (!Number(width) || Number(width) <= 0) {
     res.status(400).send('Invalid width!');
     return;
   }
-  if (!parseInt(height)) {
+  if (!Number(height) || Number(height) <= 0) {
     res.status(400).send('Invalid height!');
     return;
   }
   // check if file is cached
   if (fs.existsSync(resizedFilePath)) {
     // Serve the cached image
-    res.sendFile(resizedFilePath);
+    res.status(200).sendFile(resizedFilePath);
     return;
   }
   //send the resulting file in the response
